@@ -11,10 +11,10 @@
 #include "types.hpp"
 
 enum class Directions : std::int8_t {
-  Up,
-  Down,
-  Left,
-  Right,
+  Up = 0,
+  Down = 1,
+  Left = 2,
+  Right = 3,
 };
 
 inline Directions opposite_dir(Directions dir) {
@@ -87,6 +87,12 @@ class Board {
     }
     this->grid_info[static_cast<std::size_t>(TileNames::Water)].floor =
         Floor::Water;
+    this->grid_info[static_cast<std::size_t>(TileNames::Water)]
+        .openings[0]
+        .second = Floor::Water;
+    this->grid_info[static_cast<std::size_t>(TileNames::Water)]
+        .openings[1]
+        .second = Floor::Water;
     this->grid_info[(static_cast<std::size_t>(TileNames::Goal))].floor =
         Floor::Top;
     this->grid_info[(static_cast<std::size_t>(TileNames::Goal))].openings = {
@@ -141,8 +147,8 @@ class Board {
         return {{{Directions::Left, Floor::Top},
                  {Directions::Right, Floor::Floor}}};
       case 4:
-        return {{{Directions::Right, Floor::Floor},
-                 {Directions::Left, Floor::Top}}};
+        return {
+            {{Directions::Up, Floor::Floor}, {Directions::Down, Floor::Top}}};
       default:
         assert(0 &&
                std::format("invalid orientation: {}", orientation).c_str());
@@ -197,7 +203,7 @@ class State {
     for (auto& [opendir, openfloor] :
          board.get_openings(this->tiles[this->pawn_pos])) {
       int8_t next_pawn_pos = to_dir(this->pawn_pos, opendir);
-      if (next_pawn_pos == -1) {
+      if (next_pawn_pos == -1 || next_pawn_pos == this->water_pos) {
         continue;
       }
       Directions required_next_opening = opposite_dir(opendir);
@@ -238,19 +244,17 @@ class State {
   int heuristic() const {
     // manhattan distance
     if (this->pawn_pos == 0) return 0;
-    static const int8_t dist_to_goal[] = {
-        0, 1, 2, 1, 2, 3, 2, 3, 4, 3,
-    };
-    return dist_to_goal[this->pawn_pos];
+    return (this->pawn_pos / 3) + (this->pawn_pos % 3) + 1;
   }
 
  private:
   inline static int8_t to_dir(const int8_t before, const Directions dir) {
     static const std::array<std::array<int8_t, 4>, 10> adj = {
-        {/* 0 */ {{-1, 3, -1, 1}},
+        //       top down left right
+        {/* 0 */ {{-1, -1, -1, 1}},
          /* 1 */ {{-1, 4, 0, 2}},
          /* 2 */ {{-1, 5, 1, 3}},
-         /* 3 */ {{0, 6, 2, -1}},
+         /* 3 */ {{-1, 6, 2, -1}},
          /* 4 */ {{1, 7, -1, 5}},
          /* 5 */ {{2, 8, 4, 6}},
          /* 6 */ {{3, 9, 5, -1}},
@@ -259,17 +263,6 @@ class State {
          /* 9 */ {{6, -1, 8, -1}}}};
 
     if (before < 0 || before > 9) return -1;
-
-    switch (dir) {
-      case Directions::Up:
-        return adj[before][0];
-      case Directions::Down:
-        return adj[before][1];
-      case Directions::Left:
-        return adj[before][2];
-      case Directions::Right:
-        return adj[before][3];
-    }
-    return -1;  // Should not be reached
+    return adj[before][static_cast<std::size_t>(dir)];
   }
 };

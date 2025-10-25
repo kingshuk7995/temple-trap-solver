@@ -47,54 +47,50 @@ struct equal_to<State> {
 }  // namespace std
 
 int main() {
-// #define DEBUG_INPUT
+#define DEBUG_INPUT
 #ifdef DEBUG_INPUT
-  int input_pawn_pos = 7;
+  // test case 1
+  // int input_pawn_pos = 7;
+  // input_tile_data_t input_tile_infos = {{
+  //     {0, 0},  // Goal at position 0, orientation irrelevant
+  //     {4, 1},  // A at position 4, orientation 1
+  //     {7, 3},  // B at position 7, orientation 3
+  //     {1, 3},  // C at position 1, orientation 3
+  //     {2, 3},  // D at position 2, orientation 3
+  //     {8, 3},  // E at position 8, orientation 3
+  //     {3, 2},  // F at position 3, orientation 2
+  //     {6, 4},  // G at position 6, orientation 4
+  //     {9, 2},  // H at position 9, orientation 2
+  //     {5, 0},  // Water at position 5, orientation irrelevant
+  // }};
+  // test case 2
+  int input_pawn_pos = 2;
   input_tile_data_t input_tile_infos = {{
-      {0, 0},  // Goal at position 0, orientation irrelevant
-      {4, 1},  // A at position 4, orientation 1
-      {7, 3},  // B at position 7, orientation 3
-      {1, 3},  // C at position 1, orientation 3
-      {2, 3},  // D at position 2, orientation 3
-      {8, 3},  // E at position 8, orientation 3
-      {3, 2},  // F at position 3, orientation 2
-      {6, 4},  // G at position 6, orientation 4
-      {9, 2},  // H at position 9, orientation 2
-      {5, 0},  // Water at position 5, orientation irrelevant
+      {0, 0},
+      {1, 2},
+      {4, 3},
+      {8, 2},
+      {2, 4},
+      {6, 3},
+      {3, 3},
+      {7, 3},
+      {9, 2},
+      {5, 0},
   }};
 #else
-  input_tile_data_t input_tile_infos_dbg = {{
-      {0, 0},  // Goal at position 0, orientation irrelevant
-      {4, 1},  // A at position 4, orientation 1
-      {7, 3},  // B at position 7, orientation 3
-      {1, 3},  // C at position 1, orientation 3
-      {2, 3},  // D at position 2, orientation 3
-      {8, 3},  // E at position 8, orientation 3
-      {3, 2},  // F at position 3, orientation 2
-      {6, 4},  // G at position 6, orientation 4
-      {9, 2},  // H at position 9, orientation 2
-      {5, 0},  // Water at position 5, orientation irrelevant
-  }};
   auto input_data = handle_input();
 
   int8_t input_pawn_pos = input_data.first;
   input_tile_data_t input_tile_infos = input_data.second;
-
-  if (input_tile_infos_dbg == input_tile_infos && input_pawn_pos == 9) {
-    std::cout << "valid input\n";
-  } else {
-    std::cout << "pawn pos: " << input_pawn_pos << '\n';
-    print_tile_data(input_tile_infos);
-    print_tile_data(input_tile_infos_dbg);
-  }
 #endif
 
   Board board(input_tile_infos);
   State initial_state = State::from_input(input_pawn_pos, input_tile_infos);
-  std::cout << "parse successful\n";
+
   auto successors = [&board](const State& s) { return s.successors(board); };
   auto goal_test = [](const State& s) -> bool { return s.is_goal(); };
   auto heuristics = [](const State& s) -> int {
+    return 0;
     return static_cast<int>(s.heuristic());
   };
   auto cost_between = [](const State& a, const State& b) -> int {
