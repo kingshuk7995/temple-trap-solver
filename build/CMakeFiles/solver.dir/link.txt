@@ -1,1 +1,0 @@
-/usr/sbin/c++ -Wl,--dependency-file=CMakeFiles/solver.dir/link.d CMakeFiles/solver.dir/src/main.cpp.o -o solver

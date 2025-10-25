@@ -1,8 +1,0 @@
-[
-{
-  "directory": "/home/kp/temple-trap-cpp/build/debug",
-  "command": "/usr/sbin/c++ -Wall -Wextra -Og -g -std=c++23 -o CMakeFiles/solver.dir/src/main.cpp.o -c /home/kp/temple-trap-cpp/src/main.cpp",
-  "file": "/home/kp/temple-trap-cpp/src/main.cpp",
-  "output": "/home/kp/temple-trap-cpp/build/debug/CMakeFiles/solver.dir/src/main.cpp.o"
-}
-]

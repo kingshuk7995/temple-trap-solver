@@ -1,3 +1,0 @@
-/home/kp/temple-trap-cpp/build/CMakeFiles/solver.dir
-/home/kp/temple-trap-cpp/build/CMakeFiles/edit_cache.dir
-/home/kp/temple-trap-cpp/build/CMakeFiles/rebuild_cache.dir
