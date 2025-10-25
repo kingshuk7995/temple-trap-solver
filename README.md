@@ -1,2 +1,4 @@
 # temple-trap-solver
-A solver for the game temple trap
+
+This is a solver for the game Temple Trap<br>
+Game Link: [click here](https://www.smartgames.eu/uk/one-player-games/temple-trap-0)
