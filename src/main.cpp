@@ -47,7 +47,7 @@ struct equal_to<State> {
 }  // namespace std
 
 int main() {
-#define DEBUG_INPUT
+// #define DEBUG_INPUT
 #ifdef DEBUG_INPUT
   // test case 1
   // int input_pawn_pos = 7;
