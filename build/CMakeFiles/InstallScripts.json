@@ -1,0 +1,7 @@
+{
+	"InstallScripts" : 
+	[
+		"/home/kp/temple-trap-cpp/build/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

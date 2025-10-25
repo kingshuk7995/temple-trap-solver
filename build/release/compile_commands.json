@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/kp/temple-trap-cpp/build/release",
+  "command": "/usr/sbin/c++ -O3 -march=native -DNDEBUG -g -std=c++23 -o CMakeFiles/solver.dir/src/main.cpp.o -c /home/kp/temple-trap-cpp/src/main.cpp",
+  "file": "/home/kp/temple-trap-cpp/src/main.cpp",
+  "output": "/home/kp/temple-trap-cpp/build/release/CMakeFiles/solver.dir/src/main.cpp.o"
+}
+]

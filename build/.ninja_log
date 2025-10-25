@@ -1,0 +1,7 @@
+# ninja log v7
+0	10	1761379646689861236	/home/kp/temple-trap-cpp/build/CMakeFiles/cmake.verify_globs	9896e9b7efb1468d
+12	2190	1761379384945856828	CMakeFiles/solver.dir/src/main.cpp.o	f4449929f4776a6e
+1321	1417	1761379124829881651	solver	1b086e956826b5fa
+10	34	1761379819305848839	build.ninja	3b43a10b5dcdc12
+10	34	1761379819305848839	/home/kp/temple-trap-cpp/build/cmake_install.cmake	3b43a10b5dcdc12
+2190	2263	1761379387125859199	bin/Debug/solver	fab37e076c97c35a
