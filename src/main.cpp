@@ -47,7 +47,7 @@ struct equal_to<State> {
 }  // namespace std
 
 int main() {
-// #define DEBUG_INPUT
+#define DEBUG_INPUT
 #ifdef DEBUG_INPUT
   // test case 1
   // int input_pawn_pos = 7;
@@ -90,7 +90,6 @@ int main() {
   auto successors = [&board](const State& s) { return s.successors(board); };
   auto goal_test = [](const State& s) -> bool { return s.is_goal(); };
   auto heuristics = [](const State& s) -> int {
-    return 0;
     return static_cast<int>(s.heuristic());
   };
   auto cost_between = [](const State& a, const State& b) -> int {
@@ -104,9 +103,16 @@ int main() {
       astar(initial_state, successors, goal_test, heuristics, cost_between);
   if (result) {
     std::cout << "Found path of cost: " << result->size() - 1 << '\n';
-    for (auto& it : *result) {
-      std::cout << std::format("pawn pos: {} water pos: {}\n", it.pawn_pos,
-                               it.water_pos);
+    if (result->size() == 0) {
+      std::cout << "length 0 path\n";
+      return -1;
+    }
+    if (result->size() == 1) {
+      std::cout << "initial state is goal\n";
+      return 0;
+    }
+    for (std::size_t i = 1ull; i < result->size(); i++) {
+      std::cout << result->at(i - 1).get_action(result->at(i)) << std::endl;
     }
   } else {
     std::cout << "No path found.\n";

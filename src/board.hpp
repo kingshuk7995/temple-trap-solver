@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <cstring>
 #include <format>
+#include <iostream>
 #include <utility>
 #include <vector>
 
@@ -245,6 +246,59 @@ class State {
     // manhattan distance
     if (this->pawn_pos == 0) return 0;
     return (this->pawn_pos / 3) + (this->pawn_pos % 3) + 1;
+  }
+
+  std::string get_action(const State& to) const {
+    static std::string_view tilenames_to_char[] = {
+        "Goal", "A", "B", "C", "D", "E", "F", "G", "H", "Water", "End"};
+
+    if (this->pawn_pos != to.pawn_pos) {
+      if (State::to_dir(this->pawn_pos, Directions::Up) == to.pawn_pos) {
+        return "pawn: up";
+      } else if (State::to_dir(this->pawn_pos, Directions::Down) ==
+                 to.pawn_pos) {
+        return "pawn: down";
+      } else if (State::to_dir(this->pawn_pos, Directions::Left) ==
+                 to.pawn_pos) {
+        return "pawn: left";
+      } else if (State::to_dir(this->pawn_pos, Directions::Right) ==
+                 to.pawn_pos) {
+        return "pawn: right";
+      } else {
+        std::cerr << "error: not reachable state in path\n";
+        assert(false && "error: not reachable state in path\n");
+        return "";
+      }
+    } else if (this->water_pos != to.water_pos) {
+      if (State::to_dir(this->water_pos, Directions::Up) == to.water_pos) {
+        return std::format("{}: down",
+                           tilenames_to_char[static_cast<std::size_t>(
+                               this->tiles[to.water_pos])]);
+      } else if (State::to_dir(this->water_pos, Directions::Down) ==
+                 to.water_pos) {
+        return std::format("{}: up", tilenames_to_char[static_cast<std::size_t>(
+                                         this->tiles[to.water_pos])]);
+      } else if (State::to_dir(this->water_pos, Directions::Left) ==
+                 to.water_pos) {
+        return std::format("{}: right",
+                           tilenames_to_char[static_cast<std::size_t>(
+                               this->tiles[to.water_pos])]);
+      } else if (State::to_dir(this->water_pos, Directions::Right) ==
+                 to.water_pos) {
+        return std::format("{}: left",
+                           tilenames_to_char[static_cast<std::size_t>(
+                               this->tiles[to.water_pos])]);
+      } else {
+        std::cerr << "error: not reachable state in path\n";
+        assert(false && "error: not reachable state in path\n");
+        return "";
+      }
+    } else {
+      std::cerr << "repeating state\n";
+      assert(false &&
+             "error: same water and pawn pos in adjascent path states\n");
+      return "";
+    }
   }
 
  private:
