@@ -1,6 +1,7 @@
 #include <hashtable.h>
 
 #include <bit>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
@@ -47,7 +48,7 @@ struct equal_to<State> {
 }  // namespace std
 
 int main() {
-#define DEBUG_INPUT
+// #define DEBUG_INPUT
 #ifdef DEBUG_INPUT
   // test case 1
   // int input_pawn_pos = 7;
@@ -97,10 +98,12 @@ int main() {
     (void)b;
     return 1;
   };
-
+  auto st = std::chrono::high_resolution_clock::now();
   auto first_successor_deb = successors(initial_state);
   auto result =
       astar(initial_state, successors, goal_test, heuristics, cost_between);
+  auto end = std::chrono::high_resolution_clock::now();
+
   if (result) {
     std::cout << "Found path of cost: " << result->size() - 1 << '\n';
     if (result->size() == 0) {
@@ -117,6 +120,9 @@ int main() {
   } else {
     std::cout << "No path found.\n";
   }
-
+  std::cout
+      << "\ntime required: "
+      << std::chrono::duration_cast<std::chrono::microseconds>(end - st).count()
+      << " microseconds\n";
   return 0;
 }

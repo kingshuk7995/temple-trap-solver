@@ -10,7 +10,6 @@
 #include <unordered_map>
 #include <vector>
 
-// Concepts
 template <typename F, typename StateType>
 concept SuccessorFunc = requires(F f, const StateType& s) {
   { f(s) } -> std::same_as<std::vector<StateType>>;
@@ -31,11 +30,10 @@ concept CostFunc = requires(F f, const StateType& a, const StateType& b) {
   { f(a, b) } -> std::convertible_to<int>;
 };
 
-// Require copyable states
 template <typename StateType>
 concept AStarState = std::copyable<StateType>;
 
-// A* implementation
+// A* Implementation
 template <AStarState StateType, SuccessorFunc<StateType> Succ,
           GoalTestFunc<StateType> Goal, HeuristicFunc<StateType> Heur,
           CostFunc<StateType> Cost, typename Hash = std::hash<StateType>,
@@ -56,34 +54,37 @@ std::optional<std::vector<StateType>> astar(const StateType& start,
   ScoreMap f_score(0, hash, eq);
   CameFrom came_from(0, hash, eq);
 
+  // Priority queue node
   struct PQNode {
     int f;
-    std::size_t counter;
+    std::size_t counter;  // tie-breaker
     StateType state;
   };
-  struct Cmp {
+  struct Compare {
     bool operator()(const PQNode& a, const PQNode& b) const {
       if (a.f != b.f) return a.f > b.f;
       return a.counter > b.counter;
     }
   };
-  std::priority_queue<PQNode, std::vector<PQNode>, Cmp> open_pq;
+  std::priority_queue<PQNode, std::vector<PQNode>, Compare> open_pq;
 
+  // Initialize
   g_score[start] = 0;
   f_score[start] = heuristic(start);
   std::size_t push_counter = 0;
-  open_pq.push(PQNode{f_score[start], push_counter++, start});
+  open_pq.emplace(PQNode{f_score[start], push_counter++, start});
 
   while (!open_pq.empty()) {
     PQNode top = open_pq.top();
     open_pq.pop();
-
     StateType current = std::move(top.state);
 
+    // Skip if this node has a worse f than the latest
     auto it_f = f_score.find(current);
     if (it_f != f_score.end() && top.f > it_f->second) continue;
 
     if (is_goal(current)) {
+      // path
       std::vector<StateType> path;
       path.push_back(current);
       while (!eq(current, start)) {
@@ -95,19 +96,21 @@ std::optional<std::vector<StateType>> astar(const StateType& start,
     }
 
     for (const StateType& nb : get_successors(current)) {
-      int g_current = g_score.contains(current) ? g_score[current] : INF;
+      int g_current = g_score[current];
       int tentative_g = g_current + cost_between(current, nb);
-      int g_nb = g_score.contains(nb) ? g_score[nb] : INF;
+
+      auto it_g_nb = g_score.find(nb);
+      int g_nb = (it_g_nb != g_score.end()) ? it_g_nb->second : INF;
 
       if (tentative_g < g_nb) {
-        came_from[nb] = current;
-        g_score[nb] = tentative_g;
+        came_from.insert_or_assign(nb, current);
+        g_score.insert_or_assign(nb, tentative_g);
         int nb_f = tentative_g + heuristic(nb);
-        f_score[nb] = nb_f;
-        open_pq.push(PQNode{nb_f, push_counter++, nb});
+        f_score.insert_or_assign(nb, nb_f);
+        open_pq.emplace(PQNode{nb_f, push_counter++, nb});
       }
     }
   }
 
-  return std::nullopt;
+  return std::nullopt;  // No path
 }
