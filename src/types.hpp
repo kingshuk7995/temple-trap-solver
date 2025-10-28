@@ -1,5 +1,9 @@
 #pragma once
 
+/**
+ * @brief This file contains some type definations that are used in all files
+ */
+
 #include <array>
 #include <cstddef>
 #include <cstdint>

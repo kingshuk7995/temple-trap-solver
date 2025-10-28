@@ -14,39 +14,6 @@
 #include "input.hpp"
 #include "solver.hpp"
 
-namespace std {
-template <>
-struct hash<State> {
-  std::size_t operator()(const State& s) const noexcept {
-    std::size_t h = 0;
-
-    auto hash_combine = [&h](std::size_t v) {
-      h ^= v + 0x9e3779b97f4a7c15ULL + (h << 6) + (h >> 2);
-    };
-
-    hash_combine(std::hash<decltype(s.pawn_pos)>{}(s.pawn_pos));
-    hash_combine(std::hash<decltype(s.water_pos)>{}(s.water_pos));
-
-    std::size_t arr_hash = 0;
-    for (auto v : s.tiles) {
-      arr_hash ^= std::hash<std::uint8_t>{}(static_cast<std::uint8_t>(v)) +
-                  0x9e3779b97f4a7c15ULL + (arr_hash << 6) + (arr_hash >> 2);
-    }
-    hash_combine(arr_hash);
-
-    return h;
-  }
-};
-
-template <>
-struct equal_to<State> {
-  bool operator()(State const& a, State const& b) const noexcept {
-    return a.pawn_pos == b.pawn_pos && a.tiles == b.tiles &&
-           a.water_pos == b.water_pos;
-  }
-};
-}  // namespace std
-
 int main() {
 // #define DEBUG_INPUT
 #ifdef DEBUG_INPUT

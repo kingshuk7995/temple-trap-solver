@@ -1,5 +1,13 @@
 #pragma once
 
+/**
+ * @file board.hpp
+ * @brief Core data structures for board configuration and game state.
+ *
+ * Defines the Board and State classes used for tile layout,
+ * movement rules, and interaction logic for the puzzle game.
+ */
+
 #include <array>
 #include <cassert>
 #include <cstdint>
@@ -11,6 +19,7 @@
 
 #include "types.hpp"
 
+/// @brief Directions for named direction
 enum class Directions : std::int8_t {
   Up = 0,
   Down = 1,
@@ -18,6 +27,9 @@ enum class Directions : std::int8_t {
   Right = 3,
 };
 
+/// @brief urility for getting opposite direction
+/// @param dir a direction
+/// @return opposite direction of dir
 inline Directions opposite_dir(Directions dir) {
   switch (dir) {
     case Directions::Up:
@@ -34,12 +46,14 @@ inline Directions opposite_dir(Directions dir) {
   }
 }
 
+/// @brief a type for named floor
 enum class Floor : std::int8_t {
   Top,
   Floor,
   Water,
 };
 
+/// @brief a type for tiletype
 enum class TileTypes : int8_t {
   Water,
   Goal,
@@ -49,11 +63,18 @@ enum class TileTypes : int8_t {
   Stairs,
 };
 
+/// @brief a type for each grid position inside the board
 struct GridElement {
   std::array<std::pair<Directions, Floor>, 2> openings;
   Floor floor;
 };
 
+/**
+ * @brief Board configuration
+ * @paragraph
+ * this is a class to store the general board configuration of the tile's
+ * orientation and this is unique for a single game and common to all states
+ */
 class Board {
  public:
   Board(const input_tile_data_t& input_data) {
@@ -176,6 +197,12 @@ class Board {
   }
 };
 
+/**
+ * @brief A class for state
+ * @paragraph
+ * State is used to store the board tile positions in each state and the pawn's
+ * position in that place. This unique for each state in the game.
+ */
 class State {
  public:
   std::array<TileNames, static_cast<int>(TileNames::End)> tiles;
@@ -320,3 +347,40 @@ class State {
     return adj[before][static_cast<std::size_t>(dir)];
   }
 };
+
+/**
+ * @brief extension of std::hash and std::equal_to for template specialization
+ * to type State required for the generic A* implementation
+ */
+namespace std {
+template <>
+struct hash<State> {
+  std::size_t operator()(const State& s) const noexcept {
+    std::size_t h = 0;
+
+    auto hash_combine = [&h](std::size_t v) {
+      h ^= v + 0x9e3779b97f4a7c15ULL + (h << 6) + (h >> 2);
+    };
+
+    hash_combine(std::hash<decltype(s.pawn_pos)>{}(s.pawn_pos));
+    hash_combine(std::hash<decltype(s.water_pos)>{}(s.water_pos));
+
+    std::size_t arr_hash = 0;
+    for (auto v : s.tiles) {
+      arr_hash ^= std::hash<std::uint8_t>{}(static_cast<std::uint8_t>(v)) +
+                  0x9e3779b97f4a7c15ULL + (arr_hash << 6) + (arr_hash >> 2);
+    }
+    hash_combine(arr_hash);
+
+    return h;
+  }
+};
+
+template <>
+struct equal_to<State> {
+  bool operator()(State const& a, State const& b) const noexcept {
+    return a.pawn_pos == b.pawn_pos && a.tiles == b.tiles &&
+           a.water_pos == b.water_pos;
+  }
+};
+}  // namespace std

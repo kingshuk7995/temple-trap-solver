@@ -10,30 +10,93 @@
 #include <unordered_map>
 #include <vector>
 
+/**
+ * Concepts for Successor Function type for A*
+ */
 template <typename F, typename StateType>
 concept SuccessorFunc = requires(F f, const StateType& s) {
   { f(s) } -> std::same_as<std::vector<StateType>>;
 };
 
+/**
+ * Concepts for GoalTest Function type for A*
+ */
 template <typename F, typename StateType>
 concept GoalTestFunc = requires(F f, const StateType& s) {
   { f(s) } -> std::same_as<bool>;
 };
 
+/**
+ * Concepts for Heauristic Function type for A*
+ */
 template <typename F, typename StateType>
 concept HeuristicFunc = requires(F f, const StateType& s) {
   { f(s) } -> std::convertible_to<int>;
 };
-
+/**
+ * Concepts for Cost Function type for A*
+ */
 template <typename F, typename StateType>
 concept CostFunc = requires(F f, const StateType& a, const StateType& b) {
   { f(a, b) } -> std::convertible_to<int>;
 };
-
+/**
+ * Concepts for copyability of state needed for A*
+ */
 template <typename StateType>
 concept AStarState = std::copyable<StateType>;
 
-// A* Implementation
+/**
+ * @brief Generic A* (A-star) pathfinding algorithm.
+ *
+ * This implementation of A* works with any user-defined state type,
+ * as long as it satisfies the @ref AStarState concept and provides
+ * suitable hash and equality functions for use in unordered maps.
+ *
+ * The algorithm uses a priority queue (min-heap) for open set management
+ * and unordered maps to maintain g-scores and f-scores.
+ * It returns the path from the start state to the goal as a vector of states,
+ * or `std::nullopt` if no path is found.
+ *
+ * @tparam StateType The type representing each search state.
+ *                   Must satisfy the @ref AStarState concept.
+ * @tparam Succ      Function type satisfying @ref SuccessorFunc<StateType>.
+ *                   Should return a `std::vector<StateType>` of successor
+ * states.
+ * @tparam Goal      Function type satisfying @ref GoalTestFunc<StateType>.
+ *                   Should return `true` if the given state is a goal.
+ * @tparam Heur      Function type satisfying @ref HeuristicFunc<StateType>.
+ *                   Should return an integer heuristic estimate of
+ * cost-to-goal.
+ * @tparam Cost      Function type satisfying @ref CostFunc<StateType>.
+ *                   Should return an integer transition cost between two
+ * states.
+ * @tparam Hash      Hash functor for `StateType`. Defaults to
+ * `std::hash<StateType>`.
+ * @tparam Eq        Equality functor for `StateType`. Defaults to
+ * `std::equal_to<StateType>`.
+ *
+ * @param start          The initial state.
+ * @param get_successors  Function that returns successors of a given state.
+ * @param is_goal         Function that checks whether a state is the goal.
+ * @param heuristic       Function that computes heuristic cost for a state.
+ * @param cost_between    Function that computes the actual cost between two
+ * states.
+ * @param hash            (Optional) Hash function object for unordered_map.
+ * @param eq              (Optional) Equality comparator for unordered_map.
+ *
+ * @return `std::optional<std::vector<StateType>>` containing the sequence
+ *         of states from start to goal if a path exists; `std::nullopt`
+ * otherwise.
+ *
+ * @note The algorithm assumes that the heuristic is *admissible* (never
+ * overestimates).
+ * @warning This version uses dynamic memory (`std::unordered_map`,
+ * `std::priority_queue`). For deterministic or real-time systems, consider
+ * replacing them with `std::pmr::unordered_map` or fixed-size arena-based
+ * containers.
+ * @see AStarState, SuccessorFunc, GoalTestFunc, HeuristicFunc, CostFunc
+ */
 template <AStarState StateType, SuccessorFunc<StateType> Succ,
           GoalTestFunc<StateType> Goal, HeuristicFunc<StateType> Heur,
           CostFunc<StateType> Cost, typename Hash = std::hash<StateType>,
@@ -54,10 +117,10 @@ std::optional<std::vector<StateType>> astar(const StateType& start,
   ScoreMap f_score(0, hash, eq);
   CameFrom came_from(0, hash, eq);
 
-  // Priority queue node
+  /// Priority queue node
   struct PQNode {
     int f;
-    std::size_t counter;  // tie-breaker
+    std::size_t counter;  /// tie-breaker
     StateType state;
   };
   struct Compare {
@@ -68,7 +131,7 @@ std::optional<std::vector<StateType>> astar(const StateType& start,
   };
   std::priority_queue<PQNode, std::vector<PQNode>, Compare> open_pq;
 
-  // Initialize
+  /// Initialize
   g_score[start] = 0;
   f_score[start] = heuristic(start);
   std::size_t push_counter = 0;
@@ -112,5 +175,5 @@ std::optional<std::vector<StateType>> astar(const StateType& start,
     }
   }
 
-  return std::nullopt;  // No path
+  return std::nullopt;  /// No path
 }
