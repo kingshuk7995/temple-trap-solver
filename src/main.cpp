@@ -57,8 +57,8 @@ int main() {
 
   auto successors = [&board](const State& s) { return s.successors(board); };
   auto goal_test = [](const State& s) -> bool { return s.is_goal(); };
-  auto heuristics = [](const State& s) -> int {
-    return static_cast<int>(s.heuristic());
+  auto heuristics = [&board](const State& s) -> int {
+    return static_cast<int>(s.heuristic(board));
   };
   auto cost_between = [](const State& a, const State& b) -> int {
     (void)a;

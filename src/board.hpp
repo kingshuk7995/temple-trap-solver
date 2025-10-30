@@ -269,10 +269,20 @@ class State {
     return successors;
   }
 
-  int heuristic() const {
+  int heuristic(Board& b) const {
     // manhattan distance
     if (this->pawn_pos == 0) return 0;
-    return (this->pawn_pos / 3) + (this->pawn_pos % 3) + 1;
+    int cost = (this->pawn_pos / 3) + (this->pawn_pos % 3) + 1;
+    bool goal_opens = false;
+    for (auto& [dir, opens] : b.get_openings(this->tiles[1])) {
+      if (dir == Directions::Left && opens == Floor::Top) {
+        goal_opens = true;
+      }
+    }
+    if (goal_opens == false) {
+      cost += 3;
+    }
+    return cost;
   }
 
   std::string get_action(const State& to) const {
