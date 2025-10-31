@@ -245,13 +245,13 @@ class RenderBoard {
     // matches your earlier mapping (1->270, 2->180, 3->0, 4->90)
     switch (orientation) {
       case 1:
-        return 270;
+        return 90;
       case 2:
         return 180;
       case 3:
         return 0;
       case 4:
-        return 90;
+        return 270;
       default:
         return 0;
     }

@@ -15,36 +15,36 @@
 #include "solver.hpp"
 
 int main() {
-#define DEBUG_INPUT
+// #define DEBUG_INPUT
 #ifdef DEBUG_INPUT
   // test case 1
-  // int input_pawn_pos = 7;
-  // input_tile_data_t input_tile_infos = {{
-  //     {0, 0},  // Goal at position 0, orientation irrelevant
-  //     {4, 1},  // A at position 4, orientation 1
-  //     {7, 3},  // B at position 7, orientation 3
-  //     {1, 3},  // C at position 1, orientation 3
-  //     {2, 3},  // D at position 2, orientation 3
-  //     {8, 3},  // E at position 8, orientation 3
-  //     {3, 2},  // F at position 3, orientation 2
-  //     {6, 4},  // G at position 6, orientation 4
-  //     {9, 2},  // H at position 9, orientation 2
-  //     {5, 0},  // Water at position 5, orientation irrelevant
-  // }};
-  // test case 2
-  int input_pawn_pos = 2;
+  int input_pawn_pos = 7;
   input_tile_data_t input_tile_infos = {{
-      {0, 0},
-      {1, 2},
-      {4, 3},
-      {8, 2},
-      {2, 4},
-      {6, 3},
-      {3, 3},
-      {7, 3},
-      {9, 2},
-      {5, 0},
+      {0, 0},  // Goal at position 0, orientation irrelevant
+      {4, 1},  // A at position 4, orientation 1
+      {7, 3},  // B at position 7, orientation 3
+      {1, 3},  // C at position 1, orientation 3
+      {2, 3},  // D at position 2, orientation 3
+      {8, 3},  // E at position 8, orientation 3
+      {3, 2},  // F at position 3, orientation 2
+      {6, 4},  // G at position 6, orientation 4
+      {9, 2},  // H at position 9, orientation 2
+      {5, 0},  // Water at position 5, orientation irrelevant
   }};
+  // test case 2
+  // int input_pawn_pos = 2;
+  // input_tile_data_t input_tile_infos = {{
+  //     {0, 0},
+  //     {1, 2},
+  //     {4, 3},
+  //     {8, 2},
+  //     {2, 4},
+  //     {6, 3},
+  //     {3, 3},
+  //     {7, 3},
+  //     {9, 2},
+  //     {5, 0},
+  // }};
 #else
   auto input_data = handle_input();
 
