@@ -69,6 +69,17 @@ sf::Color Brown(80, 69, 19);
 sf::Color LightSkin(230, 220, 170);
 sf::Color Green(34, 139, 34);
 
+/// @brief adds a border to the shape
+/// @param shape
+void _add_grid(CompositeShape& shape) {
+  sf::RectangleShape cell(sf::Vector2f(200, 200));
+  cell.setFillColor(sf::Color::Transparent);
+  cell.setOutlineThickness(-1.f);
+  cell.setOutlineColor(BoardColor);
+  shape.addPart(cell, {0, 0});
+  return;
+}
+
 // FACTORY FUNCTIONS FOR SHAPES
 CompositeShape makeLShapedTop() {
   CompositeShape shape;
@@ -84,6 +95,8 @@ CompositeShape makeLShapedTop() {
   sf::RectangleShape vertical({50, 200});
   vertical.setFillColor(Brown);
   shape.addPart(vertical, {0, 0});
+
+  _add_grid(shape);
 
   return shape;
 }
@@ -103,6 +116,8 @@ CompositeShape makeLShapedBottom() {
   bottom.setFillColor(Brown);
   shape.addPart(bottom, {0, 150});  // bottom
 
+  _add_grid(shape);
+
   return shape;
 }
 
@@ -120,6 +135,8 @@ CompositeShape makePipeShapedTop() {
   sf::RectangleShape bottom({200, 50});
   bottom.setFillColor(Brown);
   shape.addPart(bottom, {0, 150});
+
+  _add_grid(shape);
 
   return shape;
 }
@@ -139,9 +156,15 @@ CompositeShape makeStairShapeBottom() {
   stair.setFillColor(Green);
   shape.addPart(stair, {0, 50});
 
+  sf::RectangleShape stair_texture({10, 100});
+  stair_texture.setFillColor(LightSkin);
+  shape.addPart(stair_texture, {20, 50});
+
   sf::RectangleShape bottom({200, 50});
   bottom.setFillColor(Brown);
   shape.addPart(bottom, {0, 150});
+
+  _add_grid(shape);
 
   return shape;
 }
@@ -151,6 +174,7 @@ CompositeShape makeWaterShape() {
   sf::RectangleShape top({200, 200});
   top.setFillColor(sf::Color::Blue);
   shape.addPart(top, {0, 0});
+  _add_grid(shape);
   return shape;
 }
 

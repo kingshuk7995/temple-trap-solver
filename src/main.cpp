@@ -18,7 +18,7 @@ int main() {
 // #define DEBUG_INPUT
 #ifdef DEBUG_INPUT
   // test case 1
-  int input_pawn_pos = 7;
+  int input_pawn_pos = 9;
   input_tile_data_t input_tile_infos = {{
       {0, 0},  // Goal at position 0, orientation irrelevant
       {4, 1},  // A at position 4, orientation 1
