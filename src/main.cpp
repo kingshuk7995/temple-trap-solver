@@ -1,13 +1,6 @@
-#include <algorithm>
-#include <bit>
-#include <chrono>
 #include <cstddef>
 #include <cstdint>
-#include <cstring>
-#include <functional>
 #include <iostream>
-#include <thread>
-#include <type_traits>
 
 #include "board.hpp"
 #include "input.hpp"
@@ -85,35 +78,21 @@ int main() {
     for (std::size_t i = 1ull; i < result->size(); i++) {
       std::cout << result->at(i - 1).get_action(result->at(i)) << std::endl;
     }
+    std::cout << "\ntime required: "
+              << std::chrono::duration_cast<std::chrono::microseconds>(end - st)
+                     .count()
+              << " microseconds\n";
+
     std::cout << "\n\nopening visualization\n"
               << "press arrow keys for nevigation\n"
               << "left arrow: previous state if exists\n"
               << "right arrow: next state if exists\n";
+
+    // Visualization
     RenderBoard renderer(input_tile_infos);
-    renderer.get_window().setFramerateLimit(60);
-    int indx = 0;
-
-    while (renderer.get_window().isOpen()) {
-      sf::Event event;
-      while (renderer.get_window().pollEvent(event)) {
-        if (event.type == sf::Event::Closed) renderer.get_window().close();
-        if (event.type == sf::Event::KeyPressed) {
-          if (event.key.code == sf::Keyboard::Left)
-            indx -= 1;
-          else if (event.key.code == sf::Keyboard::Right)
-            indx += 1;
-        }
-      }
-
-      indx = std::clamp(indx, 0, static_cast<int>(result->size()) - 1);
-      renderer.draw_state(result->at(indx));
-    }
+    renderer.draw_states(*result);
   } else {
     std::cout << "No path found.\n";
   }
-  std::cout
-      << "\ntime required: "
-      << std::chrono::duration_cast<std::chrono::microseconds>(end - st).count()
-      << " microseconds\n";
   return 0;
 }

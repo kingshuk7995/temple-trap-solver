@@ -11,6 +11,7 @@
 #include <SFML/Graphics.hpp>
 #include <array>
 #include <cassert>
+#include <chrono>
 #include <memory>
 #include <vector>
 
@@ -224,6 +225,79 @@ class RenderBoard {
     }
   }
 
+  void draw_states(const std::vector<State>& states) {
+    int indx = 0;
+    bool need_redraw = true;
+    // repeat control
+    const int MIN_MILLISECONDS_DELAY = 500;
+
+    auto last_action_time = std::chrono::steady_clock::time_point::min();
+    bool leftHeld = false, rightHeld = false;
+
+    while (window.isOpen()) {
+      sf::Event event;
+      indx = std::clamp(indx, 0, static_cast<int>(states.size()) - 1);
+
+      if (need_redraw) {
+        this->draw_state(states[indx]);
+        need_redraw = false;
+      }
+
+      if (window.waitEvent(event)) {
+        int arrow_intent = 0;
+
+        do {
+          if (event.type == sf::Event::Closed) {
+            window.close();
+          } else if (event.type == sf::Event::KeyPressed) {
+            if (event.key.code == sf::Keyboard::Left) {
+              arrow_intent = -1;
+              leftHeld = true;
+            } else if (event.key.code == sf::Keyboard::Right) {
+              arrow_intent = +1;
+              rightHeld = true;
+            }
+          } else if (event.type == sf::Event::KeyReleased) {
+            if (event.key.code == sf::Keyboard::Left) {
+              leftHeld = false;
+              last_action_time = std::chrono::steady_clock::time_point::min();
+            } else if (event.key.code == sf::Keyboard::Right) {
+              rightHeld = false;
+              last_action_time = std::chrono::steady_clock::time_point::min();
+            }
+          } else if (event.type == sf::Event::Resized) {
+            need_redraw = true;
+          }
+
+        } while (window.pollEvent(event));
+
+        if (arrow_intent != 0) {
+          auto now = std::chrono::steady_clock::now();
+          bool canAct = false;
+          if (last_action_time ==
+              std::chrono::steady_clock::time_point::min()) {
+            canAct = true;
+          } else {
+            auto elapsed_ms =
+                std::chrono::duration_cast<std::chrono::milliseconds>(
+                    now - last_action_time)
+                    .count();
+            if (elapsed_ms >= MIN_MILLISECONDS_DELAY) canAct = true;
+          }
+          if (canAct) {
+            indx += arrow_intent;
+            need_redraw = true;
+            last_action_time = std::chrono::steady_clock::now();
+          }
+        }
+
+      } else {
+        std::cerr << "error occured in sf::waitEvent\n";
+      }
+    }
+  }
+
+ private:
   void draw_state(const State& state) {
     window.clear(sf::Color(30, 30, 30));
     drawBoard();
@@ -252,10 +326,8 @@ class RenderBoard {
     window.display();
   }
 
-  sf::RenderWindow& get_window() { return window; }
-
- private:
   sf::RenderWindow window;
+
   std::array<std::unique_ptr<pieces::CompositeShape>,
              static_cast<std::size_t>(TileNames::End)>
       configuration;
