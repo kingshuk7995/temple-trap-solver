@@ -19,7 +19,8 @@ using input_tile_data_t = std::array<std::pair<std::int8_t, std::int8_t>,
 std::pair<int8_t, input_tile_data_t> handle_input() {
   int pawn_pos;
   input_tile_data_t input_tile_info{};
-  input_tile_info[static_cast<std::size_t>(TileNames::Goal)] = {0, 0};
+  input_tile_info[static_cast<std::size_t>(TileNames::Goal)] = {
+      static_cast<int8_t>(0), static_cast<int8_t>(0)};
 
   std::cout << "============ Board Positions ============" << std::endl;
   std::cout << "the position of the tile on the board\n";
@@ -89,7 +90,8 @@ std::pair<int8_t, input_tile_data_t> handle_input() {
 
   for (std::int8_t i = 1; i <= 9; i++) {
     if (!used_pos[i]) {
-      input_tile_info[static_cast<std::size_t>(TileNames::Water)] = {i, 0};
+      input_tile_info[static_cast<std::size_t>(TileNames::Water)] = {
+          i, static_cast<int8_t>(0)};
       break;
     }
   }
