@@ -1,11 +1,10 @@
+#include <board.hpp>
 #include <cstddef>
 #include <cstdint>
+#include <input.hpp>
 #include <iostream>
-
-#include "board.hpp"
-#include "input.hpp"
-#include "renderer.hpp"
-#include "solver.hpp"
+#include <renderer.hpp>
+#include <solver.hpp>
 
 int main() {
 // #define DEBUG_INPUT

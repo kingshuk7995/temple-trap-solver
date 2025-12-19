@@ -10,13 +10,12 @@
 
 #include <SFML/Graphics.hpp>
 #include <array>
+#include <board.hpp>
 #include <cassert>
 #include <chrono>
 #include <memory>
+#include <types.hpp>
 #include <vector>
-
-#include "board.hpp"
-#include "types.hpp"
 
 namespace pieces {
 

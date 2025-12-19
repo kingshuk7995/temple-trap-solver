@@ -46,6 +46,7 @@ cmake -S . -B build --preset=release
 # Compile
 cmake --build build --preset=Release
 ```
+please don't use the wasm preset, thats not fully prepared yet.
 
 ---
 

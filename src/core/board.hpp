@@ -12,12 +12,10 @@
 #include <cassert>
 #include <cstdint>
 #include <cstring>
-#include <format>
 #include <iostream>
+#include <types.hpp>
 #include <utility>
 #include <vector>
-
-#include "types.hpp"
 
 /// @brief Directions for named direction
 enum class Directions : std::int8_t {

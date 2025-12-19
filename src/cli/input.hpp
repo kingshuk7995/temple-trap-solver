@@ -9,9 +9,8 @@
 #include <iostream>
 #include <limits>
 #include <string>
+#include <types.hpp>
 #include <utility>
-
-#include "types.hpp"
 
 using input_tile_data_t = std::array<std::pair<std::int8_t, std::int8_t>,
                                      static_cast<std::size_t>(TileNames::End)>;

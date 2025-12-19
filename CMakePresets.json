@@ -5,6 +5,7 @@
     "minor": 19,
     "patch": 0
   },
+
   "configurePresets": [
     {
       "name": "debug",
@@ -27,8 +28,35 @@
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_EXPORT_COMPILE_COMMANDS": true
       }
+    },
+    {
+      "name": "emscripten-debug",
+      "displayName": "Emscripten Debug",
+      "description": "WebAssembly Debug build using Emscripten",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/emscripten-debug",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "~/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_EXECUTABLE_SUFFIX": ".js",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
+      }
+    },
+    {
+      "name": "emscripten-release",
+      "displayName": "Emscripten Release",
+      "description": "WebAssembly Release build using Emscripten",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/emscripten-release",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "~/emsdk/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_EXECUTABLE_SUFFIX": ".js",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": true
+      }
     }
   ],
+
   "buildPresets": [
     {
       "name": "debug",
@@ -37,6 +65,14 @@
     {
       "name": "release",
       "configurePreset": "release"
+    },
+    {
+      "name": "emscripten-debug",
+      "configurePreset": "emscripten-debug"
+    },
+    {
+      "name": "emscripten-release",
+      "configurePreset": "emscripten-release"
     }
   ]
 }
