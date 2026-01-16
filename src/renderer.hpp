@@ -23,7 +23,7 @@ namespace pieces {
 class CompositeShape : public sf::Drawable, public sf::Transformable {
   std::vector<sf::RectangleShape> parts;
   std::vector<sf::Vector2f> localOffsets;
-
+  
  public:
   void addPart(const sf::RectangleShape& rect, sf::Vector2f offset) {
     parts.push_back(rect);
