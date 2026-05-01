@@ -1,0 +1,7 @@
+[project]
+name = "temple-trap"
+version = "0.1.0"
+dependencies = [
+    "PySide6",
+    "nanobind"
+]

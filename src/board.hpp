@@ -223,6 +223,12 @@ class State {
 
   inline bool is_goal() const { return (this->pawn_pos == 0); }
 
+  bool operator==(const State& other) const {
+    return this->pawn_pos == other.pawn_pos &&
+           this->water_pos == other.water_pos &&
+           this->tiles == other.tiles;
+  }
+
   std::vector<State> successors(const Board& board) const {
     std::vector<State> successors;
 
